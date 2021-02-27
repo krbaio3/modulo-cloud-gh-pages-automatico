@@ -11,9 +11,18 @@ jobs:
     steps:
       - name: Clone Repository
         uses: actions/checkout@v2
+      - name: Use SSH Key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{secrets.SSH_PRIVATE_KEY}}" > ~/.ssh/id_rsa
+          sudo chmod 600 ~/.ssh/id_rsa
+      - name: Git Config
+        run: |
+          git config --global user.email "iam@my-app.com"
+          git config --global user.name "iam-user"
       - name: Install
         run: npm install
       - name: Build
         run: npm run build
       - name: Deploy
-        run: npm run deploy
+        run: npm run deploy -- -r git@github.com:krbaio3/modulo-cloud-gh-pages-automatico.git
